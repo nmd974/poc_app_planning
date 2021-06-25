@@ -18,9 +18,7 @@
 
 <body>
   <div id="planning" class="container">
-    <button @click="fetchData">Afficher</button>
-    <!-- <p>{{ fetchData() }}</p> -->
-    <div v-if="planning.length > 0">
+    <div v-if="planning.length > 0" class="mb-5 display-2">
       Bonjour, {{ planning[0].first_name}} {{ planning[0].last_name}}
     </div>
     <ul class="list-group" >
