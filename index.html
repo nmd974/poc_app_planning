@@ -20,7 +20,19 @@
   <div id="planning" class="container">
     <button @click="fetchData">Afficher</button>
     <!-- <p>{{ fetchData() }}</p> -->
-    <p>{{ planning }}</p>
+    <div v-if="planning.length > 0">
+      Bonjour, {{ planning[0].first_name}} {{ planning[0].last_name}}
+    </div>
+    <ul class="list-group" >
+      <li 
+        class="list-group-item disabled d-flex justify-content-between w-100" 
+        v-show="planning.length > 0" 
+        v-for="plan in planning">
+          <div>{{ plan.label }} </div>
+          <div>{{ plan.start.substr(11,8) }} - {{ plan.end.substr(11,8) }} </div>
+      </li>
+      <li class="list-group-item disabled" v-if="planning.length === 0">Vous n'avez pas d'activités prévues aujourd'hui</li>
+    </ul>
   </div>
 
   <!-- JavaScript Bundle with Popper -->
