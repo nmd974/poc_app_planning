@@ -7,7 +7,8 @@
       <li 
         class="list-group-item disabled d-flex justify-content-between w-100" 
         v-show="planning.length > 0" 
-        v-for="plan in planning" v-bind:key="plan">
+        v-for="plan in planning" :key="plan.id"       
+      >
           <div>{{ plan.label }} </div>
           <div>{{ plan.start.substr(11,8) }} - {{ plan.end.substr(11,8) }} </div>
       </li>
@@ -17,7 +18,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import planningData from "../service/planning.js";
 
 export default {
   data() {
@@ -31,12 +32,10 @@ export default {
   methods:{
     async fetchData () {
       try {
-        var response = await axios.get(`http://127.0.0.1:80/planning/${document.location.search.slice(3)}`);
+        var response = await planningData.fetchDataPlanning(this.$route.params.id)
         response.data.forEach(el => {
-          console.log(el);
           this.planning.push(el);
         })
-        console.log(this.planning);
       } catch (error) {
         console.log(error);
       }
