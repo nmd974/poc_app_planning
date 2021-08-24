@@ -1,5 +1,6 @@
 <template>
   <div id="planning" class="container">
+    toto
     <div v-if="planning.length > 0" class="mb-5 display-2">
       Bonjour, {{ planning[0].first_name}} {{ planning[0].last_name}}
     </div>
@@ -30,15 +31,9 @@ export default {
     this.fetchData();
   },
   methods:{
-    async fetchData () {
-      try {
-        var response = await planningData.fetchDataPlanning(this.$route.params.id)
-        response.data.forEach(el => {
-          this.planning.push(el);
-        })
-      } catch (error) {
-        console.log(error);
-      }
+    fetchData : async function () {
+      var res = await planningData.getDataUser("$2y$10$ZbI.GaOvYuj33000HS5Mye.x.lld7o09okZNTtZEfkHzEKc0utQA2")
+      console.log(res)  
     }
   }
 }
