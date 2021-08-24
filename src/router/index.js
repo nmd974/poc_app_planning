@@ -5,7 +5,7 @@ import Home from '@/views/Home.vue'
 Vue.use(VueRouter)
 
 const routes = [{
-    path: '/',
+    path: '/planning',
     name: 'Home',
     component: Home
 }, ]

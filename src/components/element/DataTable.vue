@@ -4,6 +4,7 @@
     :items="desserts"
     :single-expand="true"
     :expanded.sync="expanded"
+    :search="search"
     item-key="name"
     show-expand
     class="elevation-1"
@@ -12,6 +13,13 @@
       <v-toolbar flat>
         <v-toolbar-title>Votre Planning d'examen</v-toolbar-title>
         <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+          ></v-text-field>
       </v-toolbar>
     </template>
     <template v-slot:expanded-item="{ headers, item }">
@@ -26,20 +34,19 @@
   export default {
     data () {
       return {
+        search: '',
         expanded: [],
         singleExpand: false,
         dessertHeaders: [
           {
-            text: 'Dessert (100g serving)',
+            text: "Nom de l'examen",
             align: 'start',
             sortable: false,
             value: 'name',
           },
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
-          { text: 'Carbs (g)', value: 'carbs' },
-          { text: 'Protein (g)', value: 'protein' },
-          { text: 'Iron (%)', value: 'iron' },
+          { text: 'Date', value: 'calories' },
+          { text: 'Heure', value: 'fat' },
+          { text: 'Etat', value: 'carbs' },
           { text: '', value: 'data-table-expand' },
         ],
         desserts: [
