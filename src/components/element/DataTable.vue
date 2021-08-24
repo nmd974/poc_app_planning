@@ -1,7 +1,7 @@
 <template>
   <v-data-table
-    :headers="dessertHeaders"
-    :items="desserts"
+    :headers="examHeaders"
+    :items="examData"
     :single-expand="true"
     :expanded.sync="expanded"
     :search="search"
@@ -13,125 +13,147 @@
       <v-toolbar flat>
         <v-toolbar-title>Votre Planning d'examen</v-toolbar-title>
         <v-spacer></v-spacer>
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
-            hide-details
-          ></v-text-field>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
       </v-toolbar>
     </template>
-    <template v-slot:expanded-item="{ headers, item }">
-      <td :colspan="headers.length">
-        More info about {{ item.name }}
-      </td>
+    <template v-slot:expanded-item="{ item }" >  
+      <v-row class="mx-auto"> 
+        <v-col cols="10" class="mx-auto">
+      <v-timeline>
+        <v-timeline-item 
+            v-for="activitie in item.activities"
+            :key="activitie.id"
+        >
+          {{ activitie.exam}}
+        </v-timeline-item>
+      </v-timeline>
+      </v-col>
+      </v-row>
     </template>
   </v-data-table>
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        search: '',
-        expanded: [],
-        singleExpand: false,
-        dessertHeaders: [
-          {
-            text: "Nom de l'examen",
-            align: 'start',
-            sortable: false,
-            value: 'name',
-          },
-          { text: 'Date', value: 'calories' },
-          { text: 'Heure', value: 'fat' },
-          { text: 'Etat', value: 'carbs' },
-          { text: '', value: 'data-table-expand' },
-        ],
-        desserts: [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-            iron: '1%',
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-            iron: '1%',
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-            iron: '7%',
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-            iron: '8%',
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-            iron: '16%',
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-            iron: '0%',
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-            iron: '2%',
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-            iron: '45%',
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-            iron: '22%',
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-            iron: '6%',
-          },
-        ],
+export default {
+  props: ["examData"],
+  methods: {
+    changeMinToHours: function (data) {
+      var nbHour = parseInt(data / 60);
+      var nbminuteRestante = data % 60;
+      if (nbminuteRestante == 0) {
+        return nbHour + "h";
+      } else {
+        return nbHour + "h" + nbminuteRestante;
       }
+      return 675 / 60;
     },
-  }
+  },
+  data() {
+    return {
+      search: "",
+      expanded: [],
+      singleExpand: false,
+      examHeaders: [
+        {
+          text: "Nom de l'examen",
+          align: "start",
+          sortable: false,
+          value: "label",
+        },
+        { text: "Date", value: "date_exam" },
+        { text: "Heure", value: "heure_exam" },
+        { text: "Etat", value:""},
+        { text: "", value: "data-table-expand" },
+      ],
+      desserts: [
+        {
+          name: "Frozen Yogurt",
+          calories: 159,
+          fat: 6.0,
+          carbs: 24,
+          protein: 4.0,
+          iron: "1%",
+        },
+        {
+          name: "Ice cream sandwich",
+          calories: 237,
+          fat: 9.0,
+          carbs: 37,
+          protein: 4.3,
+          iron: "1%",
+        },
+        {
+          name: "Eclair",
+          calories: 262,
+          fat: 16.0,
+          carbs: 23,
+          protein: 6.0,
+          iron: "7%",
+        },
+        {
+          name: "Cupcake",
+          calories: 305,
+          fat: 3.7,
+          carbs: 67,
+          protein: 4.3,
+          iron: "8%",
+        },
+        {
+          name: "Gingerbread",
+          calories: 356,
+          fat: 16.0,
+          carbs: 49,
+          protein: 3.9,
+          iron: "16%",
+        },
+        {
+          name: "Jelly bean",
+          calories: 375,
+          fat: 0.0,
+          carbs: 94,
+          protein: 0.0,
+          iron: "0%",
+        },
+        {
+          name: "Lollipop",
+          calories: 392,
+          fat: 0.2,
+          carbs: 98,
+          protein: 0,
+          iron: "2%",
+        },
+        {
+          name: "Honeycomb",
+          calories: 408,
+          fat: 3.2,
+          carbs: 87,
+          protein: 6.5,
+          iron: "45%",
+        },
+        {
+          name: "Donut",
+          calories: 452,
+          fat: 25.0,
+          carbs: 51,
+          protein: 4.9,
+          iron: "22%",
+        },
+        {
+          name: "KitKat",
+          calories: 518,
+          fat: 26.0,
+          carbs: 65,
+          protein: 7,
+          iron: "6%",
+        },
+      ],
+    };
+  },
+};
 </script>

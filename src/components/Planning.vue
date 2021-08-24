@@ -1,6 +1,6 @@
 <template>
   <div >
-    <bar :title="planning.promotion.promo" />
+    <bar v-bind:title="planning.promotion.promo" />
 
     <v-container>
       <v-card elevation="4" outlined shaped>
@@ -9,7 +9,7 @@
         </v-card-title>
 
         <v-card-text>
-          <dataTable></dataTable>
+          <dataTable :examData="planning.exam"></dataTable>
         </v-card-text>
       </v-card>
     </v-container>
@@ -36,7 +36,7 @@ export default {
       test: true,
     };
   },
-  mounted() {
+  created() {
     this.fetchData();
   },
   methods: {
@@ -45,18 +45,8 @@ export default {
         "$2y$10$ZbI.GaOvYuj33000HS5Mye.x.lld7o09okZNTtZEfkHzEKc0utQA2"
       );
       this.planning = res.data.data;
-      console.log(this.planning);
     },
-    changeMinToHours: function (data) {
-      var nbHour = parseInt(data / 60);
-      var nbminuteRestante = data % 60;
-      if (nbminuteRestante == 0) {
-        return nbHour + "h";
-      } else {
-        return nbHour + "h" + nbminuteRestante;
-      }
-      return 675 / 60;
-    },
+    
   },
 };
 </script>
