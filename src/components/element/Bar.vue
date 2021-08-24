@@ -2,7 +2,7 @@
     <v-app-bar color="#03718D" app>
       <v-img
         class="mx-2"
-        src="../../assets/logo.png"
+        src="@/assets/logo.png"
         max-height="50"
         max-width="50"
         contain

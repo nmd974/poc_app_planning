@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import planning from "../components/Planning.vue"
+import planning from "@/components/Planning.vue"
 export default {
   name: 'Home',
   components: {

@@ -17,9 +17,9 @@
 </template>
 
 <script>
-import dataTable from "../components/element/DataTable.vue"
-import planningData from "../service/planning.js";
-import bar from "../components/element/Bar.vue";
+import dataTable from "@/components/element/DataTable.vue"
+import planningData from "@/service/planning.js";
+import bar from "@/components/element/Bar.vue";
 
 export default {
   components: {
