@@ -1,58 +1,66 @@
 <template>
-  <div id="planning" class="container">
-    toto
-    <div v-if="planning.length > 0" class="mb-5 display-2">
-      Bonjour, {{ planning[0].first_name}} {{ planning[0].last_name}}
-    </div>
-    <ul class="list-group" >
-      <li 
-        class="list-group-item disabled d-flex justify-content-between w-100" 
-        v-show="planning.length > 0" 
-        v-for="plan in planning" :key="plan.id"       
-      >
-          <div>{{ plan.label }} </div>
-          <div>{{ plan.start.substr(11,8) }} - {{ plan.end.substr(11,8) }} </div>
-      </li>
-      <li class="list-group-item disabled" v-if="planning.length === 0">Vous n'avez pas d'activités prévues aujourd'hui</li>
-    </ul>
+  <div >
+    <bar :title="planning.promotion.promo" />
+
+    <v-container>
+      <v-card elevation="4" outlined shaped>
+        <v-card-title> 
+          Bonjour {{ planning.first_name }} {{ planning.last_name }},
+        </v-card-title>
+
+        <v-card-text>
+          <dataTable></dataTable>
+        </v-card-text>
+      </v-card>
+    </v-container>
   </div>
 </template>
 
 <script>
+import dataTable from "../components/element/DataTable.vue"
 import planningData from "../service/planning.js";
+import bar from "../components/element/Bar.vue";
 
 export default {
+  components: {
+    bar,
+    dataTable,
+  },
   data() {
-    return { 
-      planning: [] 
+    return {
+      planning: {
+        promotion: {
+          promo: null,
+        },
+      },
+      test: true,
     };
   },
-  mounted(){
+  mounted() {
     this.fetchData();
   },
-  methods:{
-    fetchData : async function () {
-      var res = await planningData.getDataUser("$2y$10$ZbI.GaOvYuj33000HS5Mye.x.lld7o09okZNTtZEfkHzEKc0utQA2")
-      console.log(res)  
-    }
-  }
-}
+  methods: {
+    fetchData: async function () {
+      var res = await planningData.getDataUser(
+        "$2y$10$ZbI.GaOvYuj33000HS5Mye.x.lld7o09okZNTtZEfkHzEKc0utQA2"
+      );
+      this.planning = res.data.data;
+      console.log(this.planning);
+    },
+    changeMinToHours: function (data) {
+      var nbHour = parseInt(data / 60);
+      var nbminuteRestante = data % 60;
+      if (nbminuteRestante == 0) {
+        return nbHour + "h";
+      } else {
+        return nbHour + "h" + nbminuteRestante;
+      }
+      return 675 / 60;
+    },
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
 </style>
