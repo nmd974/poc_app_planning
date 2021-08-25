@@ -4,5 +4,8 @@ import api from '@/service/api.js'
 export default {
     getDataUser(token) {
         return api.get('/user/exam?token=' + token)
+    },
+    getDataJury(token) {
+        return api.get('/jury/exam/' + token)
     }
 }
