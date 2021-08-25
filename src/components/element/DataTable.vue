@@ -2,10 +2,10 @@
   <v-data-table
     :headers="examHeaders"
     :items="examData"
-    :single-expand="true"
+    :single-expand="singleExpand"
     :expanded.sync="expanded"
     :search="search"
-    item-key="name"
+    item-key="heure_exam"
     show-expand
     class="elevation-1"
   >
@@ -22,19 +22,55 @@
         ></v-text-field>
       </v-toolbar>
     </template>
-    <template v-slot:expanded-item="{ item }" >  
-      <v-row class="mx-auto"> 
-        <v-col cols="10" class="mx-auto">
-      <v-timeline>
-        <v-timeline-item 
-            v-for="activitie in item.activities"
-            :key="activitie.id"
-        >
-          {{ activitie.exam}}
-        </v-timeline-item>
-      </v-timeline>
-      </v-col>
-      </v-row>
+
+    <!-----------Slot Extend tab---------------------- -->
+    <template v-slot:expanded-item="{ headers, item }">
+      <td :colspan="headers.length">
+        <v-timeline align-top dense>
+          <v-timeline-item
+            :color="
+              changeColorTimeline(
+                item.date_exam,
+                addTimeWithTimeStart(item.heure_exam, item.activities, index),
+                 addTimeWithTimeStart(item.heure_exam, item.activities, index+1)
+              )
+            "
+            small
+            v-for="(activitie, index) in item.activities"
+            :key="index"
+          >
+            <v-row class="pt-1">
+              <v-col cols="3">
+                <strong>{{
+                  addTimeWithTimeStart(item.heure_exam, item.activities, index)
+                }}</strong>
+              </v-col>
+              <v-col>
+                <strong>{{ activitie.exam }}</strong>
+                <div class="text-caption">
+                  La durée est de {{ activitie.duration }} minutes
+                </div>
+              </v-col>
+            </v-row>
+          </v-timeline-item>
+        </v-timeline>
+      </td>
+    </template>
+
+    <!-----------Slot time_start---------------------- -->
+    <template v-slot:item.heure_exam="{ item }">
+      {{ changeMinToHours(item.heure_exam) }}
+    </template>
+
+    <!-----------Slot time_start---------------------- -->
+    <template v-slot:item.etat="{ item }">
+      <v-chip
+        class="ma-2"
+        :color="changeColorChips(changeEtat(item.date_exam))"
+        text-color="white"
+      >
+        {{ changeEtat(item.date_exam) }}
+      </v-chip>
     </template>
   </v-data-table>
 </template>
@@ -43,22 +79,100 @@
 export default {
   props: ["examData"],
   methods: {
+    changeColorTimeline(date_exam, time, timeNest) {
+      var dateDuJour = new Date().toISOString().substr(0, 10);
+      dateDuJour = this.changeFormatDate(dateDuJour);
+      var timeNow = new Date().toTimeString().substr(0, 5);
+      if (date_exam == dateDuJour) {
+        if (time == timeNow) {
+          return "green";
+        } else if (time < timeNow) {
+          return "black";
+        } else if (time < timeNest) {
+          return "green";
+        } else {
+          return "#03718D";
+        }
+        console.log(time);
+        return "green";
+      } else if (date_exam < dateDuJour) {
+        return "black";
+      } else {
+        return "#03718D";
+      }
+    },
+    changeFormatDate: function (date) {
+      var newDate = date.split("-");
+      newDate = newDate[2] + "-" + newDate[1] + "-" + newDate[0];
+
+      return newDate;
+    },
+    changeColorChips: function (statut) {
+      if (statut == "En Cours") {
+        return "green";
+      } else if (statut == "Prochainement") {
+        return "#03718D";
+      } else {
+        return "black";
+      }
+    },
+
+    changeEtat: function (date) {
+      var dateDuJour = new Date().toISOString().substr(0, 10);
+
+      dateDuJour = this.changeFormatDate(dateDuJour);
+
+      if (dateDuJour == date) {
+        return "En Cours";
+      } else if (dateDuJour < date) {
+        return "Prochainement";
+      } else {
+        return "Terminé";
+      }
+    },
+
+    addTimeWithTimeStart: function (heureDepart, dataActivitie, index) {
+      var timeStart = heureDepart;
+
+      if (index == 0) {
+        return this.changeMinToHours(heureDepart);
+      }
+
+      for (let i = 1; i < dataActivitie.length; i++) {
+        const element = dataActivitie[i];
+        timeStart = element.duration + timeStart;
+
+        if (i == index) {
+          return this.changeMinToHours(timeStart);
+        }
+      }
+    },
     changeMinToHours: function (data) {
       var nbHour = parseInt(data / 60);
       var nbminuteRestante = data % 60;
       if (nbminuteRestante == 0) {
-        return nbHour + "h";
+        if (nbHour < 10) {
+          nbHour = "0" + nbHour;
+        }
+        return nbHour + ":00";
       } else {
-        return nbHour + "h" + nbminuteRestante;
+        if (nbminuteRestante < 10) {
+          nbminuteRestante = "0" + nbminuteRestante;
+        }
+        if (nbHour < 10) {
+          nbHour = "0" + nbHour;
+        }
+        return nbHour + ":" + nbminuteRestante;
       }
-      return 675 / 60;
     },
   },
   data() {
     return {
       search: "",
+      color: "#03718D",
+      etat: null,
       expanded: [],
-      singleExpand: false,
+      singleExpand: true,
       examHeaders: [
         {
           text: "Nom de l'examen",
@@ -68,90 +182,8 @@ export default {
         },
         { text: "Date", value: "date_exam" },
         { text: "Heure", value: "heure_exam" },
-        { text: "Etat", value:""},
+        { text: "Etat", value: "etat" },
         { text: "", value: "data-table-expand" },
-      ],
-      desserts: [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: "1%",
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: "1%",
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          iron: "7%",
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          iron: "8%",
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          iron: "16%",
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          iron: "0%",
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          iron: "2%",
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          iron: "45%",
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          iron: "22%",
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          iron: "6%",
-        },
       ],
     };
   },

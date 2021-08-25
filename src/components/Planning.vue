@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import dataTable from "@/components/element/DataTable.vue"
+import dataTable from "@/components/element/DataTable.vue";
 import planningData from "@/service/planning.js";
 import bar from "@/components/element/Bar.vue";
 
@@ -41,9 +41,7 @@ export default {
   },
   methods: {
     fetchData: async function () {
-      var res = await planningData.getDataUser(
-        "$2y$10$ZbI.GaOvYuj33000HS5Mye.x.lld7o09okZNTtZEfkHzEKc0utQA2"
-      );
+      var res = await planningData.getDataUser(this.$route.params.id);
       this.planning = res.data.data;
     },
     

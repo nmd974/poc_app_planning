@@ -5,7 +5,7 @@ import Home from '@/views/Home.vue'
 Vue.use(VueRouter)
 
 const routes = [{
-    path: '/planning/eleve/:token',
+    path: '/planning/eleve/:id',
     name: 'Home',
     component: Home
 }, ]
