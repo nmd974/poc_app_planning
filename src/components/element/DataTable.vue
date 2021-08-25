@@ -79,6 +79,7 @@
 export default {
   props: ["examData"],
   methods: {
+
     changeColorTimeline(date_exam, time, timeNest) {
       var dateDuJour = new Date().toISOString().substr(0, 10);
       dateDuJour = this.changeFormatDate(dateDuJour);
@@ -101,6 +102,7 @@ export default {
         return "#03718D";
       }
     },
+
     changeFormatDate: function (date) {
       var newDate = date.split("-");
       newDate = newDate[2] + "-" + newDate[1] + "-" + newDate[0];
@@ -147,6 +149,7 @@ export default {
         }
       }
     },
+    
     changeMinToHours: function (data) {
       var nbHour = parseInt(data / 60);
       var nbminuteRestante = data % 60;
@@ -166,6 +169,7 @@ export default {
       }
     },
   },
+  
   data() {
     return {
       search: "",

@@ -7,7 +7,7 @@
 <script>
 import planning from "@/components/Planning.vue"
 export default {
-  name: 'Home',
+  name: 'Eleve',
   components: {
     planning
   }
