@@ -72,7 +72,7 @@
       <v-chip
         class="ma-2 font-weight-bold"
         :color="changeColorChips(
-          changeEtat(item.date_exam)
+          changeEtat(item.date_exam, heuredeFinExamEnmin(item.heure_exam, item.activities), item.heure_exam)
         )"
         text-color="white"
       >
@@ -125,13 +125,13 @@ export default {
     },
     changeColorChips: function (statut) {
       if (statut == "En Cours") {
-        return "blue-grey darken-1";
         return "orange accent-3";
-      } else if (statut == "Prochainement") {
+      } 
+      if (statut == "Prochainement") {
         return "#03718D";
-      } else {
-        return "blue-grey darken-1";
-      }
+      } 
+
+      return "blue-grey darken-1";
     },
 
     changeEtat: function (date, timeEnd, timeStart) {
