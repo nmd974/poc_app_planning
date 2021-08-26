@@ -13,6 +13,10 @@
       <v-toolbar flat>
         <v-toolbar-title>Votre Planning d'examen</v-toolbar-title>
         <v-spacer></v-spacer>
+      </v-toolbar>
+      
+       <v-toolbar flat>
+        <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
