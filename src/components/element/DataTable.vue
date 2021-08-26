@@ -35,8 +35,9 @@
             :color="
               changeColorTimeline(
                 item.date_exam,
-                addTimeWithTimeStart(item.heure_exam, item.activities, index),
-                 addTimeWithTimeStart(item.heure_exam, item.activities, index+1)
+                addTimeWithTimeStartEnMin(item.heure_exam, item.activities, index),
+                addTimeWithTimeStartEnMin(item.heure_exam, item.activities, index+1),
+                heuredeFinExamEnmin(item.heure_exam, item.activities)
               )
             "
             small
@@ -69,11 +70,13 @@
     <!-----------Slot time_start---------------------- -->
     <template v-slot:item.etat="{ item }">
       <v-chip
-        class="ma-2"
-        :color="changeColorChips(changeEtat(item.date_exam))"
+        class="ma-2 font-weight-bold"
+        :color="changeColorChips(
+          changeEtat(item.date_exam)
+        )"
         text-color="white"
       >
-        {{ changeEtat(item.date_exam) }}
+        {{ changeEtat(item.date_exam, heuredeFinExamEnmin(item.heure_exam, item.activities), item.heure_exam)}}
       </v-chip>
     </template>
   </v-data-table>
@@ -84,24 +87,31 @@ export default {
   props: ["examData"],
   methods: {
 
-    changeColorTimeline(date_exam, time, timeNest) {
+    changeColorTimeline(date_exam, time, timeNest, timeEnd) {
       var dateDuJour = new Date().toISOString().substr(0, 10);
       dateDuJour = this.changeFormatDate(dateDuJour);
-      var timeNow = new Date().toTimeString().substr(0, 5);
+      var hours = new Date().toTimeString().substr(0, 2);
+      var hoursNowToMin = hours * 60 + (new Date().toTimeString().substr(3, 2)*1)
       if (date_exam == dateDuJour) {
-        if (time == timeNow) {
-          return "green";
-        } else if (time < timeNow) {
-          return "black";
-        } else if (time < timeNest) {
-          return "green";
-        } else {
-          return "#03718D";
+        if(hoursNowToMin == time) {
+          return 'orange'
         }
-        console.log(time);
-        return "green";
+        if(hoursNowToMin > time) {
+          if(hoursNowToMin < timeNest){
+            return 'orange'
+          }
+          if(!timeNest) {
+            console.log(timeEnd)
+            if(hoursNowToMin > timeEnd) {
+              return 'grey'
+            }
+            return 'orange'
+          }
+          return 'grey'
+        }
+
       } else if (date_exam < dateDuJour) {
-        return "black";
+        return "blue-grey darken-1";
       } else {
         return "#03718D";
       }
@@ -115,26 +125,49 @@ export default {
     },
     changeColorChips: function (statut) {
       if (statut == "En Cours") {
-        return "green";
+        return "blue-grey darken-1";
+        return "orange accent-3";
       } else if (statut == "Prochainement") {
         return "#03718D";
       } else {
-        return "black";
+        return "blue-grey darken-1";
       }
     },
 
-    changeEtat: function (date) {
+    changeEtat: function (date, timeEnd, timeStart) {
+      var hours = new Date().toTimeString().substr(0, 2);
+      var hoursNowToMin = hours * 60 + (new Date().toTimeString().substr(3, 2)*1)
       var dateDuJour = new Date().toISOString().substr(0, 10);
-
+      
       dateDuJour = this.changeFormatDate(dateDuJour);
 
       if (dateDuJour == date) {
+        if(hoursNowToMin > timeEnd) {
+          return "Terminé"
+        }
+        if(hoursNowToMin < timeStart) {
+          return "Prochainement"
+        }
         return "En Cours";
       } else if (dateDuJour < date) {
         return "Prochainement";
       } else {
         return "Terminé";
       }
+    },
+
+    heuredeFinExamEnmin: function (heureDebut, activities) {
+      var dureTotal = 0
+      var heureFinExam
+
+      for (let index = 0; index < activities.length; index++) {
+        const duration = activities[index].duration;
+        dureTotal = duration +  dureTotal
+      }
+
+      heureFinExam = heureDebut + dureTotal
+
+      return heureFinExam
     },
 
     addTimeWithTimeStart: function (heureDepart, dataActivitie, index) {
@@ -145,11 +178,27 @@ export default {
       }
 
       for (let i = 1; i < dataActivitie.length; i++) {
-        const element = dataActivitie[i];
+        const element = dataActivitie[i-1];
         timeStart = element.duration + timeStart;
 
         if (i == index) {
           return this.changeMinToHours(timeStart);
+        }
+      }
+    },
+    addTimeWithTimeStartEnMin: function (heureDepart, dataActivitie, index) {
+      var timeStart = heureDepart;
+
+      if (index == 0) {
+        return heureDepart;
+      }
+
+      for (let i = 1; i < dataActivitie.length; i++) {
+        const element = dataActivitie[i-1];
+        timeStart = element.duration + timeStart;
+
+        if (i == index) {
+          return timeStart;
         }
       }
     },
