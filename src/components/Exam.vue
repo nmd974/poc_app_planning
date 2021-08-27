@@ -35,7 +35,8 @@
             <template v-slot:expanded-item="{ headers, item }">
               <td :colspan="headers.length">
                 <v-banner single-line>
-                  l'élève est né le <strong>{{ item.birthday }}</strong> et est joignable :
+                  l'élève est né le <strong>{{ changeFormatDate(item.birthday) }}</strong> et est
+                  joignable :
                   <strong>{{ item.email }}</strong>
                 </v-banner>
 
@@ -159,6 +160,12 @@ export default {
     this.dataJury();
   },
   methods: {
+    changeFormatDate: function (date) {
+      var newDate = date.split("-");
+      newDate = newDate[2] + "-" + newDate[1] + "-" + newDate[0];
+
+      return newDate;
+    },
     addTimeWithTimeStart: function (heureDepart, dataActivitie, index) {
       var timeStart = heureDepart;
 
@@ -302,8 +309,10 @@ export default {
 };
 </script>
 <style >
-.v-data-table>.v-data-table__wrapper tbody tr.v-data-table__expanded__content {
-    box-shadow: none;
+.v-data-table
+  > .v-data-table__wrapper
+  tbody
+  tr.v-data-table__expanded__content {
+  box-shadow: none;
 }
-
 </style>
