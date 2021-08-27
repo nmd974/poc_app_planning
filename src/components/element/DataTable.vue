@@ -246,3 +246,11 @@ export default {
   },
 };
 </script>
+<style>
+.v-data-table>.v-data-table__wrapper tbody tr.v-data-table__expanded__content {
+    box-shadow: none;
+}
+.v-application .elevation-2 {
+    box-shadow: none;
+}
+</style>

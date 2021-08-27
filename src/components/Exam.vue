@@ -34,7 +34,7 @@
 
             <template v-slot:expanded-item="{ headers, item }">
               <td :colspan="headers.length">
-                <v-banner elevation="2" single-line>
+                <v-banner single-line>
                   l'élève est né le <strong>{{ item.birthday }}</strong> et est joignable :
                   <strong>{{ item.email }}</strong>
                 </v-banner>
@@ -301,3 +301,9 @@ export default {
   },
 };
 </script>
+<style >
+.v-data-table>.v-data-table__wrapper tbody tr.v-data-table__expanded__content {
+    box-shadow: none;
+}
+
+</style>
